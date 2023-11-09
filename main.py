@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 import sys, shutil, os
 
 from grafico import gerarGrafico
-import Serial
-import Instruments
-
+from Arduino import Arduino, findArduino
+from Instruments import PowerSupply, Multimeter
+from teste import Teste
 # usei essas listas pra
 graficos = [
     # "gráfico 1","gráfico 2", "gráfico 3"
@@ -14,7 +14,13 @@ tabelas = [
     # "tabela 1",'tabela 2', 'tabela 3', 'tabela 4'
 ]
 types = ["csv", "xls", "xlsx", "json"]
-
+porta = findArduino()
+def getPath(pasta):
+    my_os = sys.platform
+    if my_os == 'win32':
+        return '.\\'+pasta+'\\'
+curr_lim =  0.01
+volt_lim = 5.
 
 class Ui_MainWindow(object):
     # Criando os componentes
@@ -209,6 +215,10 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        # self.serial = Arduino(porta)
+        # self.font = PowerSupply(curr_lim,volt_lim)
+        # self.multimeter = Multimeter(self.serial)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -310,10 +320,13 @@ class Ui_MainWindow(object):
 
     def actionIniciar(self):
         # criar pop up pro cara confirmar
+        
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
-            pass
-        # verificar valores
+            print(self.tipo_file.currentText())
+                
+
+        else: print('not ok')
         #       colocar avisos
         # coletar valores
         # acionar medição
@@ -375,7 +388,19 @@ class Ui_MainWindow(object):
         self.label_img_grafico.setPixmap(QtGui.QPixmap(path))
         # mostrar o gráfico no label
         pass
+    def fazerMedicao(self):
+        self.font.powerSupplyOpen()
+        c = self.input_c.strip()
+        v = self.input_v.strip()
+        c = int(c) if c.isdigit() else False
+        v = int(v) if v.isdigit() else False
+        if( c and v):
+            file = self.input_caminho.text()
+            type = self.tipo_file.currentText()
+            self.multimeter.readValues()
+        # self.multimeter.readValues()
 
+        
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

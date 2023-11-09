@@ -1,7 +1,4 @@
-class Teste(nome):
-    def oi():
-        print('oi', nome)
+class Teste():
+    def oi(self, nome):
+        print('oi',nome )
 
-
-caralho = Teste('lanerson')
-caralho.oi()

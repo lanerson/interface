@@ -1,15 +1,15 @@
-from Serial import Serial
+from Arduino import Arduino
 import time
 import pyvisa
 import numpy as np
 
 class PowerSupply():
-    def __init__(self, curr_lim, volt_lim):
+    def __init__(self ): # curr_lim, volt_lim talvez voltem mas por enquanto não
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
         self.power_supply = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
         self.power_supply.write("*RST")
-        self.power_supply.write(f"CURR:LIM {curr_lim}")
-        self.power_supply.write(f"VOLT:LIM {volt_lim}")
+        # self.power_supply.write(f"CURR:LIM {curr_lim}")
+        # self.power_supply.write(f"VOLT:LIM {volt_lim}")
 
     def powerSupplyOpen(self, curr, volt):
         self.power_supply.write(f"CURR {curr}")
@@ -21,33 +21,36 @@ class PowerSupply():
         self.power_supply.close()
 
 class Multimeter():
-    def __init__(self, serial = Serial) -> None:
+    def __init__(self, serial = Arduino) -> None:
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
         self.multimeter = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
         self.ser = serial
 
-    def readValues(self) -> np.array:
-        measures = np.zeros((5, 99))
+    def readValues(self, file, type) -> np.array:
+        sensor = 9
+        collum = 3
+        movements = sensor*2
+        measures = np.zeros((collum, movements))
         self.ser.serialOpen()
         self.multimeter.write("*RST")
         self.multimeter.write("INIT")
         self.multimeter.write("TRIG:COUN ")
-        for i in range(33):
+        for i in range(movements):
             self.multimeter.write("*RST")
             self.multimeter.write("INIT")
-            self.multimeter.write("TRIG:COUN 15")
+            self.multimeter.write(f"TRIG:COUN {sensor}")
             self.multimeter.write("TRIG:SOUR BUS")
-            for j in range(15):
-                self.ser.serialWrite("a")
+            for j in range(sensor):
+                self.ser.serialWrite("M")
                 time.sleep(90)
-                if self.ser.serialRead() == "p":
+                if self.ser.serialRead() == "F":
                     self.multimeter.write("*TRG")
             
             response = self.multimeter.query("FETC?")
-            readings = np.array([float(read) for read in response.split(", ")], dtype = np.float128).reshape((5, 3))
-            measures[:, i::33] = readings
+            readings = np.array([float(read) for read in response.split(", ")], dtype = np.float128).reshape((collum, 3))
+            measures[:, i::2] = readings
 
-        measures.tofile("dados.csv", sep = ",")
+        measures.tofile(f"{file}.{type}", sep = ",")
 
     def multimeterClose(self) -> None:
         self.multimeter.close()

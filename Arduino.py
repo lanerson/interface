@@ -2,12 +2,14 @@ import serial
 import serial.tools.list_ports
 import time
 
-def getPorts():
-    ports = serial.tools.list_ports.comports()
-    return ports
 
-def findArduino(portsFound):
+def findArduino():
+    def getPorts():
+        ports = serial.tools.list_ports.comports()
+        return ports
+    portsFound = getPorts()
     commPort = "None"
+
     numConnnection = len(portsFound)
 
     for i in range(numConnnection):
@@ -20,8 +22,8 @@ def findArduino(portsFound):
 
     return commPort
 
-class Serial():
-    def __init__(self, port, baudrate, size, timeout = None):
+class Arduino():
+    def __init__(self, port, baudrate = 9600, size = 1, timeout = None):
         self.ser = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
         self.size = size
         time.sleep(0.1)
