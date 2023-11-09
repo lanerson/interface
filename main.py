@@ -2,8 +2,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 import sys, shutil, os
 
-import multimetro
 from grafico import gerarGrafico
+import Serial
+import Instruments
 
 # usei essas listas pra
 graficos = [
