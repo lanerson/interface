@@ -215,9 +215,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        # self.serial = Arduino(porta)
-        # self.font = PowerSupply(curr_lim,volt_lim)
-        # self.multimeter = Multimeter(self.serial)
+        self.serial = Arduino(porta)
+        self.font = PowerSupply(curr_lim,volt_lim)
+        self.multimeter = Multimeter(self.serial)
 
 
     def retranslateUi(self, MainWindow):
@@ -323,7 +323,7 @@ class Ui_MainWindow(object):
         
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
-            print(self.tipo_file.currentText())
+            self.fazerMedicao()
                 
 
         else: print('not ok')

@@ -43,3 +43,4 @@ class Arduino():
 
     def serialClose(self):
         self.ser.close()
+
