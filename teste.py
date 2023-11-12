@@ -1,4 +1,3 @@
-class Teste():
-    def oi(self, nome):
-        print('oi',nome )
-
+with open('file.csv','+ab') as file:
+    texto = 22*'1;'
+    file.write('')

@@ -5,7 +5,6 @@ import sys, shutil, os
 from grafico import gerarGrafico
 from Arduino import Arduino, findArduino
 from Instruments import PowerSupply, Multimeter
-from teste import Teste
 # usei essas listas pra
 graficos = [
     # "gráfico 1","gráfico 2", "gráfico 3"
@@ -14,7 +13,7 @@ tabelas = [
     # "tabela 1",'tabela 2', 'tabela 3', 'tabela 4'
 ]
 types = ["csv", "xls", "xlsx", "json"]
-porta = findArduino()
+
 def getPath(pasta):
     my_os = sys.platform
     if my_os == 'win32':
@@ -92,7 +91,7 @@ class Ui_MainWindow(object):
         self.input_v.setFont(font75)
         self.input_v.setObjectName("input_v")
         self.label_n_sensor = QtWidgets.QLabel(self.groupBox)
-        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 170, 30))
+        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 180, 30))
 
         self.label_n_sensor.setFont(font50)
         self.n_sensor = QtWidgets.QComboBox(self.groupBox)
@@ -109,17 +108,13 @@ class Ui_MainWindow(object):
 
         self.btn_iniciar.setFont(font75)
         self.btn_iniciar.setObjectName("btn_iniciar")
-        self.btn_interromper = QtWidgets.QPushButton(self.tab)
-        self.btn_interromper.setGeometry(QtCore.QRect(280, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
 
-        self.btn_interromper.setFont(font)
-        self.btn_interromper.setObjectName("btn_interromper")
         self.btn_resetar = QtWidgets.QPushButton(self.tab)
-        self.btn_resetar.setGeometry(QtCore.QRect(100, 470, 150, 40))
+        self.btn_resetar.setGeometry(QtCore.QRect(130, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -204,20 +199,23 @@ class Ui_MainWindow(object):
         self.label_img_grafico.setGeometry(QtCore.QRect(40, 290, 480, 240))
         self.label_img_grafico.setAutoFillBackground(False)
         self.label_img_grafico.setText("")
-        # self.label_img_grafico.setPixmap(
-        #     QtGui.QPixmap("/home/lanerson/Downloads/prog/graficos/Figure 1.png")
-        # )
+        
         self.label_img_grafico.setScaledContents(True)
-        # self.label_img_grafico.setObjectName("label_img_grafico")
+        
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        # self.serial = Arduino(porta)
-        # self.font = PowerSupply(curr_lim,volt_lim)
-        # self.multimeter = Multimeter(self.serial)
+
+        # código do romero
+        self.serial = Arduino(porta)
+        self.font = PowerSupply()
+        self.multimeter = Multimeter(self.serial)
+        self.input_c.setText('100')
+        self.input_v.setText('100')
+        self.input_caminho.setText('teste')
 
 
     def retranslateUi(self, MainWindow):
@@ -237,7 +235,6 @@ class Ui_MainWindow(object):
         self.n_sensor.setItemText(1, _translate("MainWindow", "10"))
         self.n_sensor.setItemText(2, _translate("MainWindow", "5"))
         self.btn_iniciar.setText(_translate("MainWindow", "Iniciar"))
-        self.btn_interromper.setText(_translate("MainWindow", "Interromper"))
         self.btn_resetar.setText(_translate("MainWindow", "Resetar valores"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Salvamento"))
         self.label_3.setText(_translate("MainWindow", "Nome"))
@@ -258,7 +255,7 @@ class Ui_MainWindow(object):
         )
 
     # método para atualizar os itens do select
-    def setItems(self, pai, filhos):
+    def setItems(self, pai, filhos): # ok
         _translate = QtCore.QCoreApplication.translate
         pai.clear()
         for i, filho in enumerate(filhos):
@@ -283,15 +280,14 @@ class Ui_MainWindow(object):
             msg.setText("Tem certeza que deseja continuar?")
             msg.setIcon(QMessageBox.Warning)
             msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
-        elif modo == "Interromper":
-            pass
+        
 
         x = msg.exec_()
         return x
 
     # especifico das tabelas
-    def setTabelas(self):
-        pasta = "/".join(sys.argv[0].split("/")[:-1]) + "/tabelas/"
+    def setTabelas(self): # ok
+        pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\tabelas\\"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
         # Filtra apenas os arquivos (exclui diretórios)
@@ -300,13 +296,11 @@ class Ui_MainWindow(object):
             for arquivo in arquivos
             if os.path.isfile(os.path.join(pasta, arquivo))
         ]
-        # Imprime a lista de arquivos
-        # tabelas = arquivos.copy()
         self.setItems(self.select_tabela, arquivos)
 
     # especifico dos gráficos
-    def setGraficos(self):
-        pasta = "/".join(sys.argv[0].split("/")[:-1]) + "/graficos/"
+    def setGraficos(self): # ok
+        pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\graficos\\"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
         # Filtra apenas os arquivos (exclui diretórios)
@@ -318,22 +312,14 @@ class Ui_MainWindow(object):
         # Imprime a lista de arquivos
         self.setItems(self.select_grafico, arquivos)
 
-    def actionIniciar(self):
-        # criar pop up pro cara confirmar
-        
+    def actionIniciar(self): # ok
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
-            print(self.tipo_file.currentText())
-                
-
+            self.fazerMedicao()
+            pass
         else: print('not ok')
-        #       colocar avisos
-        # coletar valores
-        # acionar medição
-
-        pass
-
-    def actionResetar(self):
+        
+    def actionResetar(self): # ok
         self.input_c.setText("")
         self.input_v.setText("")
         self.input_caminho.setText("")
@@ -342,9 +328,6 @@ class Ui_MainWindow(object):
         self.n_sensor.setCurrentIndex(0)
         self.tipo_file.setCurrentIndex(0)
 
-    def actionInterromper(self):
-        # parar medição
-        pass
 
     def importarTabela(self):
         def abrirDialogo():
@@ -366,7 +349,7 @@ class Ui_MainWindow(object):
         if not (file.split(".")[-1] in types):
             self.popUp("Error")
             return 0
-        path = "/".join(sys.argv[0].split("/")[:-1]) + "/tabelas/" + file.split("/")[-1]
+        path = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\tabelas\\" + file.split("\\")[-1]
         try:
             shutil.copy2(file, path)
             # print(f"Cópia segura de '{file}' para '{path}' foi concluída com sucesso.")
@@ -384,25 +367,27 @@ class Ui_MainWindow(object):
     def actionMostrar(self):
         # ver qual gráfico foi selecionado
         text = self.select_grafico.currentText()
-        path = pasta = "/".join(sys.argv[0].split("/")[:-1]) + "/graficos/" + text
+        path = pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\graficos\\" + text
         self.label_img_grafico.setPixmap(QtGui.QPixmap(path))
         # mostrar o gráfico no label
         pass
     def fazerMedicao(self):
-        self.font.powerSupplyOpen()
-        c = self.input_c.strip()
-        v = self.input_v.strip()
+        c = self.input_c.text().strip()
+        v = self.input_v.text().strip()
         c = int(c) if c.isdigit() else False
         v = int(v) if v.isdigit() else False
         if( c and v):
+            self.font.powerSupplyOpen(c,v)
             file = self.input_caminho.text()
             type = self.tipo_file.currentText()
-            self.multimeter.readValues()
+            self.multimeter.readValues(file, type)
+            self.font.powerSupplyClose()
         # self.multimeter.readValues()
 
         
 
 if __name__ == "__main__":
+    porta = findArduino()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
