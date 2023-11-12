@@ -6,6 +6,7 @@ import numpy as np
 class PowerSupply():
     def __init__(self): # curr_lim, volt_lim talvez voltem mas por enquanto não
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
+        
         self.power_supply = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
         self.power_supply.write("*RST")
         # self.power_supply.write(f"CURR:LIM {curr_lim}")
@@ -30,10 +31,10 @@ class Multimeter():
         self.ser = serial
 
     def readValues(self, file, type):
-        sensor = 9
+        sensor = 6
         collum = 3
-        movements = sensor*2
-        measures = np.zeros((collum, movements))
+        movements = 2
+        measures = np.zeros((sensor*collum, movements))
         self.ser.serialOpen()
         self.multimeter.write("*RST")
         self.multimeter.write("INIT")
@@ -43,16 +44,25 @@ class Multimeter():
             self.multimeter.write("INIT")
             self.multimeter.write(f"TRIG:COUN {sensor}")
             self.multimeter.write("TRIG:SOUR BUS")
+            teste = []
             for j in range(1, sensor+1):
+                print('vai: ',j)
                 self.ser.serialWrite(b"M" * j)
                 time.sleep(5)
+                a = self.multimeter.query("FETC?")
+                teste.append(a)
+                print(a)
                 if self.ser.serialRead() == "F":
                     self.multimeter.write("*TRG")
                     
             response = self.multimeter.query("FETC?")
-            readings = np.array([float(read) for read in response.split(", ")], dtype = np.float128).reshape((collum, 3))
-            measures[:, i::2] = readings
-
+            response = response[:-2]
+            print(response)
+            print('----\n',teste)
+            return
+            readings = np.array([float(read) for read in response.split(",")], dtype = np.float64).reshape((collum, sensor))
+            measures[:, i::movements] = readings
+        
         measures.tofile(f"{file}.{type}", sep = ",")
 
     def multimeterClose(self):
