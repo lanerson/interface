@@ -39,9 +39,9 @@ class Multimeter():
         self.multimeter.write("*RST")
         for i in range(movements):
             self.multimeter.write("*RST")
-            self.multimeter.write("INIT")
-            self.multimeter.write(f"TRIG:COUN {sensor}")
             self.multimeter.write("TRIG:SOUR BUS") 
+            self.multimeter.write("INIT")
+            self.multimeter.write(f"TRIG:COUN {collum * sensor}")            
             for j in range(sensor):                
                 self.ser.serialWrite(b"M")    
                             
