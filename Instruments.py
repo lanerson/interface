@@ -26,7 +26,7 @@ class PowerSupply():
 class Multimeter():
     def __init__(self, serial = Arduino) -> None:
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
-        self.multimeter = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
+        self.multimeter = self.rm.open_resource("GPIB0::22::INSTR")
         self.multimeter.read_termination = "\n"
         self.multimeter.write_termination = "\n"
         self.multimeter.query_delay = 0.1
