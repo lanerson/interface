@@ -26,7 +26,7 @@ class PowerSupply():
 class Multimeter():
     def __init__(self, serial = Arduino) -> None:
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
-        self.multimeter = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
+        self.multimeter = self.rm.open_resource("GPIB0::22::INSTR")
         self.multimeter.read_termination = "\n"
         self.multimeter.write_termination = "\n"
         self.multimeter.query_delay = 0.1
@@ -37,24 +37,19 @@ class Multimeter():
         collum = 3
         movements = 3
         measures = np.zeros((collum, movements * sensor))
+        response = []
         self.ser.serialOpen()
         self.multimeter.write("*RST")
         for i in range(movements):
-            self.multimeter.write("*RST")
-            self.multimeter.write("TRIG:SOUR BUS") 
-            self.multimeter.write("INIT")
-            self.multimeter.write(f"TRIG:COUN {collum * sensor}") 
-            # teste           
             for j in range(sensor):                
-                self.ser.serialWrite(b"M")    
-                            
+                self.ser.serialWrite(b"M")                                
                 if self.ser.serialRead() == "F":
-                    self.multimeter.write("*TRG")
+                    a = self.multimeter.query("MEAS?")
+                    print(a)
+                    response.append(a)
                     
-            response = self.multimeter.query("FETC?")
-            response = response[:-2]
             print(response)            
-            readings = np.array([float(read) for read in response.split(",")], dtype = np.float64).reshape((collum, sensor))
+            readings = np.array([float(read) for read in response], dtype = np.float64).reshape((collum, sensor))
             measures[:, i::movements] = readings
         
         measures.tofile(f"{file}.{type}", sep = ",")

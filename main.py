@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
         self.input_v.setFont(font75)
         self.input_v.setObjectName("input_v")
         self.label_n_sensor = QtWidgets.QLabel(self.groupBox)
-        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 180, 30))
+        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 200, 30))
 
         self.label_n_sensor.setFont(font50)
         self.n_sensor = QtWidgets.QComboBox(self.groupBox)
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
 
         self.btn_resetar = QtWidgets.QPushButton(self.tab)
-        self.btn_resetar.setGeometry(QtCore.QRect(130, 470, 150, 40))
+        self.btn_resetar.setGeometry(QtCore.QRect(200, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -216,6 +216,8 @@ class Ui_MainWindow(object):
         self.input_c.setText('100')
         self.input_v.setText('100')
         self.input_caminho.setText('teste')
+        self.tipo_a.setCurrentIndex(1)
+        self.tipo_v.setCurrentIndex(1)
 
 
     def retranslateUi(self, MainWindow):
