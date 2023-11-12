@@ -43,23 +43,18 @@ class Multimeter():
             self.multimeter.write("*RST")
             self.multimeter.write("INIT")
             self.multimeter.write(f"TRIG:COUN {sensor}")
-            self.multimeter.write("TRIG:SOUR BUS")
-            teste = []
+            self.multimeter.write("TRIG:SOUR BUS")            
             for j in range(1, sensor+1):
                 print('vai: ',j)
                 self.ser.serialWrite(b"M" * j)
                 time.sleep(5)
-                a = self.multimeter.query("FETC?")
-                teste.append(a)
-                print(a)
                 if self.ser.serialRead() == "F":
                     self.multimeter.write("*TRG")
                     
             response = self.multimeter.query("FETC?")
             response = response[:-2]
             print(response)
-            print('----\n',teste)
-            return
+            
             readings = np.array([float(read) for read in response.split(",")], dtype = np.float64).reshape((collum, sensor))
             measures[:, i::movements] = readings
         

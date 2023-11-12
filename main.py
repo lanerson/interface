@@ -108,17 +108,13 @@ class Ui_MainWindow(object):
 
         self.btn_iniciar.setFont(font75)
         self.btn_iniciar.setObjectName("btn_iniciar")
-        self.btn_interromper = QtWidgets.QPushButton(self.tab)
-        self.btn_interromper.setGeometry(QtCore.QRect(280, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
 
-        self.btn_interromper.setFont(font)
-        self.btn_interromper.setObjectName("btn_interromper")
         self.btn_resetar = QtWidgets.QPushButton(self.tab)
-        self.btn_resetar.setGeometry(QtCore.QRect(100, 470, 150, 40))
+        self.btn_resetar.setGeometry(QtCore.QRect(130, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -203,11 +199,9 @@ class Ui_MainWindow(object):
         self.label_img_grafico.setGeometry(QtCore.QRect(40, 290, 480, 240))
         self.label_img_grafico.setAutoFillBackground(False)
         self.label_img_grafico.setText("")
-        # self.label_img_grafico.setPixmap(
-        #     QtGui.QPixmap("\\home\\lanerson\\Downloads\\prog\\graficos\\Figure 1.png")
-        # )
+        
         self.label_img_grafico.setScaledContents(True)
-        # self.label_img_grafico.setObjectName("label_img_grafico")
+        
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -216,9 +210,9 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # código do romero
-        self.serial = Arduino(porta)
-        self.font = PowerSupply()
-        self.multimeter = Multimeter(self.serial)
+        # self.serial = Arduino(porta)
+        # self.font = PowerSupply()
+        # self.multimeter = Multimeter(self.serial)
 
 
     def retranslateUi(self, MainWindow):
@@ -238,7 +232,6 @@ class Ui_MainWindow(object):
         self.n_sensor.setItemText(1, _translate("MainWindow", "10"))
         self.n_sensor.setItemText(2, _translate("MainWindow", "5"))
         self.btn_iniciar.setText(_translate("MainWindow", "Iniciar"))
-        self.btn_interromper.setText(_translate("MainWindow", "Interromper"))
         self.btn_resetar.setText(_translate("MainWindow", "Resetar valores"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Salvamento"))
         self.label_3.setText(_translate("MainWindow", "Nome"))
@@ -259,7 +252,7 @@ class Ui_MainWindow(object):
         )
 
     # método para atualizar os itens do select
-    def setItems(self, pai, filhos):
+    def setItems(self, pai, filhos): # ok
         _translate = QtCore.QCoreApplication.translate
         pai.clear()
         for i, filho in enumerate(filhos):
@@ -284,14 +277,13 @@ class Ui_MainWindow(object):
             msg.setText("Tem certeza que deseja continuar?")
             msg.setIcon(QMessageBox.Warning)
             msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
-        elif modo == "Interromper":
-            pass
+        
 
         x = msg.exec_()
         return x
 
     # especifico das tabelas
-    def setTabelas(self):
+    def setTabelas(self): # ok
         pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\tabelas\\"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
@@ -301,12 +293,10 @@ class Ui_MainWindow(object):
             for arquivo in arquivos
             if os.path.isfile(os.path.join(pasta, arquivo))
         ]
-        # Imprime a lista de arquivos
-        # tabelas = arquivos.copy()
         self.setItems(self.select_tabela, arquivos)
 
     # especifico dos gráficos
-    def setGraficos(self):
+    def setGraficos(self): # ok
         pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\graficos\\"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
@@ -319,22 +309,14 @@ class Ui_MainWindow(object):
         # Imprime a lista de arquivos
         self.setItems(self.select_grafico, arquivos)
 
-    def actionIniciar(self):
-        # criar pop up pro cara confirmar
-        
+    def actionIniciar(self): # ok
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
-            self.fazerMedicao()
-                
-
+            # self.fazerMedicao()
+            pass
         else: print('not ok')
-        #       colocar avisos
-        # coletar valores
-        # acionar medição
-
-        pass
-
-    def actionResetar(self):
+        
+    def actionResetar(self): # ok
         self.input_c.setText("")
         self.input_v.setText("")
         self.input_caminho.setText("")
@@ -343,9 +325,6 @@ class Ui_MainWindow(object):
         self.n_sensor.setCurrentIndex(0)
         self.tipo_file.setCurrentIndex(0)
 
-    def actionInterromper(self):
-        # parar medição
-        pass
 
     def importarTabela(self):
         def abrirDialogo():
