@@ -6,7 +6,6 @@ print('oi')
 class PowerSupply():
     def __init__(self): # curr_lim, volt_lim talvez voltem mas por enquanto não
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
-        
         self.power_supply = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
         self.power_supply.write("*RST")
         # self.power_supply.write(f"CURR:LIM {curr_lim}")
