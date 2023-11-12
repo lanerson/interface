@@ -34,17 +34,15 @@ class Multimeter():
         sensor = 3
         collum = 3
         movements = 3
-        measures = np.zeros((sensor*collum, movements))
+        measures = np.zeros((collum, movements * sensor))
         self.ser.serialOpen()
         self.multimeter.write("*RST")
-        self.multimeter.write("INIT")
-        self.multimeter.write("TRIG:COUN ")
         for i in range(movements):
             self.multimeter.write("*RST")
             self.multimeter.write("INIT")
             self.multimeter.write(f"TRIG:COUN {sensor}")
             self.multimeter.write("TRIG:SOUR BUS") 
-            for j in range(1, sensor+1):                
+            for j in range(sensor):                
                 self.ser.serialWrite(b"M")    
                             
                 if self.ser.serialRead() == "F":
