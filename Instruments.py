@@ -2,7 +2,7 @@ from Arduino import Arduino
 import time
 import pyvisa
 import numpy as np
-
+print('oi')
 class PowerSupply():
     def __init__(self): # curr_lim, volt_lim talvez voltem mas por enquanto não
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
