@@ -210,9 +210,12 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # código do romero
-        # self.serial = Arduino(porta)
-        # self.font = PowerSupply()
-        # self.multimeter = Multimeter(self.serial)
+        self.serial = Arduino(porta)
+        self.font = PowerSupply()
+        self.multimeter = Multimeter(self.serial)
+        self.input_c.setText('100')
+        self.input_v.setText('100')
+        self.input_caminho.setText('teste')
 
 
     def retranslateUi(self, MainWindow):
@@ -312,7 +315,7 @@ class Ui_MainWindow(object):
     def actionIniciar(self): # ok
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
-            # self.fazerMedicao()
+            self.fazerMedicao()
             pass
         else: print('not ok')
         

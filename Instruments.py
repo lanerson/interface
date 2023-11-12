@@ -31,9 +31,9 @@ class Multimeter():
         self.ser = serial
 
     def readValues(self, file, type):
-        sensor = 6
+        sensor = 3
         collum = 3
-        movements = 2
+        movements = 3
         measures = np.zeros((sensor*collum, movements))
         self.ser.serialOpen()
         self.multimeter.write("*RST")
@@ -43,22 +43,21 @@ class Multimeter():
             self.multimeter.write("*RST")
             self.multimeter.write("INIT")
             self.multimeter.write(f"TRIG:COUN {sensor}")
-            self.multimeter.write("TRIG:SOUR BUS")            
-            for j in range(1, sensor+1):
-                print('vai: ',j)
-                self.ser.serialWrite(b"M" * j)
-                time.sleep(5)
+            self.multimeter.write("TRIG:SOUR BUS") 
+            for j in range(1, sensor+1):                
+                self.ser.serialWrite(b"M")    
+                            
                 if self.ser.serialRead() == "F":
                     self.multimeter.write("*TRG")
                     
             response = self.multimeter.query("FETC?")
             response = response[:-2]
-            print(response)
-            
+            print(response)            
             readings = np.array([float(read) for read in response.split(",")], dtype = np.float64).reshape((collum, sensor))
             measures[:, i::movements] = readings
         
         measures.tofile(f"{file}.{type}", sep = ",")
+        
 
     def multimeterClose(self):
         self.multimeter.close()

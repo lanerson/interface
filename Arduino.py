@@ -25,6 +25,7 @@ class Arduino():
             print('já tava aberta')
 
     def serialRead(self):
+        time.sleep(2)
         if self.ser.in_waiting == self.size:
             readValue = self.ser.read(size = self.size)
             self.ser.reset_input_buffer()
@@ -36,3 +37,16 @@ class Arduino():
 
     def serialClose(self):
         self.ser.close()
+        
+# porta = findArduino()
+# arduino = Arduino(porta)
+# c = 20
+# while True:
+#     r = str(input('continua? '))    
+#     arduino.serialWrite(b"M")        
+#     time.sleep(2)
+#     print(arduino.serialRead())
+#     c+=1
+#     if( c == 10):
+#         arduino.serialClose()
+#         break
