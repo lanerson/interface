@@ -28,6 +28,9 @@ class Multimeter():
     def __init__(self, serial = Arduino) -> None:
         self.rm = pyvisa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
         self.multimeter = self.rm.open_resource("USB0::0x0957::0xCD18::MY51144612::0::INSTR")
+        self.multimeter.read_termination = "\n"
+        self.multimeter.write_termination = "\n"
+        self.multimeter.query_delay = 0.1
         self.ser = serial
 
     def readValues(self, file, type):
@@ -41,7 +44,8 @@ class Multimeter():
             self.multimeter.write("*RST")
             self.multimeter.write("TRIG:SOUR BUS") 
             self.multimeter.write("INIT")
-            self.multimeter.write(f"TRIG:COUN {collum * sensor}")            
+            self.multimeter.write(f"TRIG:COUN {collum * sensor}") 
+            # teste           
             for j in range(sensor):                
                 self.ser.serialWrite(b"M")    
                             
