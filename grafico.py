@@ -1,9 +1,8 @@
-import pandas as pd
 import csv
 from numpy import float64 as flt
 
 # Definindo o caminho completo para o arquivo CSV
-caminho_arquivo = 'file_.csv'  # Substitua 'caminho_completo' pelo caminho real do arquivo
+caminho_arquivo = ".\\tabelas\\teste2.csv"  # Substitua 'caminho_completo' pelo caminho real do arquivo
 n_sensor = 2
 n_medidas = 11
 def gerarGrafico(file):
@@ -63,3 +62,5 @@ def gerarGrafico(file):
     plt.show()
     # plt.savefig("teste.png")
     plt.close()
+
+gerarGrafico(caminho_arquivo)
