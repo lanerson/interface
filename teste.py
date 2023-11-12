@@ -1,3 +1,3 @@
-with open('file.csv','+ab') as file:
-    texto = 22*'1;'
-    file.write('')
+import sys
+
+print(sys.argv[0])
