@@ -371,13 +371,24 @@ class Ui_MainWindow(object):
         self.label_img_grafico.setPixmap(QtGui.QPixmap(path))
         # mostrar o gráfico no label
         pass
+    def conversao(self):
+        a = self.tipo_a.currentText()
+        v = self.tipo_v.currentText()
+        if a == "µA": a = 0.000001
+        elif a == "mA": a = 0.001
+        elif a == "A" : a = 1.
+        if v == "µV": v = 0.000001
+        elif v == "mV": v = 0.001
+        elif v == "V" : v = 1.
+        return a,v
     def fazerMedicao(self):
         c = self.input_c.text().strip()
         v = self.input_v.text().strip()
         c = int(c) if c.isdigit() else False
         v = int(v) if v.isdigit() else False
         if( c and v):
-            self.font.powerSupplyOpen(c,v)
+            c_conv, v_conv = self.conversao()
+            self.font.powerSupplyOpen(c*c_conv,v*v_conv)
             file = self.input_caminho.text()
             type = self.tipo_file.currentText()
             self.multimeter.readValues(file, type)

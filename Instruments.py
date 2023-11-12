@@ -48,7 +48,7 @@ class Multimeter():
                 if self.ser.serialRead() == "F":
                     self.multimeter.write("*TRG")
                     
-            response = self.multimeter.query("FETC?")
+            response = self.multimeter.query("MEAS?")
             response = response[:-2]
             print(response)            
             readings = np.array([float(read) for read in response.split(",")], dtype = np.float64).reshape((collum, sensor))
