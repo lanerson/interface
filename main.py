@@ -5,7 +5,6 @@ import sys, shutil, os
 from grafico import gerarGrafico
 from Arduino import Arduino, findArduino
 from Instruments import PowerSupply, Multimeter
-from teste import Teste
 # usei essas listas pra
 graficos = [
     # "gráfico 1","gráfico 2", "gráfico 3"
