@@ -63,4 +63,4 @@ def gerarGrafico(file):
     # plt.savefig("teste.png")
     plt.close()
 
-gerarGrafico(caminho_arquivo)
+# gerarGrafico(caminho_arquivo)
