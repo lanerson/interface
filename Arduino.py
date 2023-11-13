@@ -29,7 +29,8 @@ class Arduino():
         if self.ser.in_waiting == self.size:
             readValue = self.ser.read(size = self.size)
             self.ser.reset_input_buffer()
-            return str(readValue)
+            print(str(readValue)[2])
+            return str(readValue)[2]
     
     def serialWrite(self, message):
         self.ser.reset_output_buffer()

@@ -17,7 +17,7 @@ types = ["csv", "xls", "xlsx", "json"]
 def getPath(pasta):
     my_os = sys.platform
     if my_os == 'win32':
-        return '.\\'+pasta+'\\'
+        return './'+pasta+'/'
 curr_lim =  0.01
 volt_lim = 5.
 
@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
         self.input_v.setFont(font75)
         self.input_v.setObjectName("input_v")
         self.label_n_sensor = QtWidgets.QLabel(self.groupBox)
-        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 180, 30))
+        self.label_n_sensor.setGeometry(QtCore.QRect(20, 150, 200, 30))
 
         self.label_n_sensor.setFont(font50)
         self.n_sensor = QtWidgets.QComboBox(self.groupBox)
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
 
         self.btn_resetar = QtWidgets.QPushButton(self.tab)
-        self.btn_resetar.setGeometry(QtCore.QRect(130, 470, 150, 40))
+        self.btn_resetar.setGeometry(QtCore.QRect(200, 470, 150, 40))
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
 
         self.groupBox_4.setFont(font75)
         self.label_8 = QtWidgets.QLabel(self.groupBox_4)
-        self.label_8.setGeometry(QtCore.QRect(20, 60, 200, 30))
+        self.label_8.setGeometry(QtCore.QRect(20, 60, 240, 30))
         self.label_8.setFont(font50)
 
         self.btn_gerar_tabela = QtWidgets.QPushButton(self.groupBox_4)
@@ -182,7 +182,7 @@ class Ui_MainWindow(object):
         self.groupBox_5.setFont(font75)
         # self.groupBox_5.setObjectName("groupBox_5")
         self.label_9 = QtWidgets.QLabel(self.groupBox_5)
-        self.label_9.setGeometry(QtCore.QRect(20, 30, 140, 30))
+        self.label_9.setGeometry(QtCore.QRect(20, 30, 200, 30))
         self.label_9.setFont(font50)
 
         self.select_grafico = QtWidgets.QComboBox(self.groupBox_5)
@@ -216,6 +216,8 @@ class Ui_MainWindow(object):
         self.input_c.setText('100')
         self.input_v.setText('100')
         self.input_caminho.setText('teste')
+        self.tipo_a.setCurrentIndex(1)
+        self.tipo_v.setCurrentIndex(1)
 
 
     def retranslateUi(self, MainWindow):
@@ -280,6 +282,11 @@ class Ui_MainWindow(object):
             msg.setText("Tem certeza que deseja continuar?")
             msg.setIcon(QMessageBox.Warning)
             msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+        elif modo == "Information":
+            msg.setWindowTitle("Aviso")
+            msg.setText("Medição concluída com Sucesso!")
+            msg.setIcon(QMessageBox.Warning)
+            msg.setStandardButtons(QMessageBox.Ok)
         
 
         x = msg.exec_()
@@ -287,7 +294,7 @@ class Ui_MainWindow(object):
 
     # especifico das tabelas
     def setTabelas(self): # ok
-        pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\tabelas\\"
+        pasta = "./tabelas/"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
         # Filtra apenas os arquivos (exclui diretórios)
@@ -300,7 +307,7 @@ class Ui_MainWindow(object):
 
     # especifico dos gráficos
     def setGraficos(self): # ok
-        pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\graficos\\"
+        pasta = "./graficos/"
         # Lista todos os arquivos na pasta
         arquivos = os.listdir(pasta)
         # Filtra apenas os arquivos (exclui diretórios)
@@ -316,7 +323,8 @@ class Ui_MainWindow(object):
         resp = self.popUp("Iniciar")
         if resp == QMessageBox.Ok:
             self.fazerMedicao()
-            pass
+            self.setTabelas()
+            self.popUp("Information")
         else: print('not ok')
         
     def actionResetar(self): # ok
@@ -349,7 +357,7 @@ class Ui_MainWindow(object):
         if not (file.split(".")[-1] in types):
             self.popUp("Error")
             return 0
-        path = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\tabelas\\" + file.split("\\")[-1]
+        path = "/".join(sys.argv[0].split("/")[:-1]) + "/tabelas/" + file.split("/")[-1]
         try:
             shutil.copy2(file, path)
             # print(f"Cópia segura de '{file}' para '{path}' foi concluída com sucesso.")
@@ -361,13 +369,15 @@ class Ui_MainWindow(object):
 
     def actionGerar(self):
         # ver qual tabela foi selecionada
+        caminho = self.select_tabela.currentText()
+        gerarGrafico(caminho)
         # acionar geração de gráfico
         self.setGraficos()
 
     def actionMostrar(self):
         # ver qual gráfico foi selecionado
         text = self.select_grafico.currentText()
-        path = pasta = "\\".join(sys.argv[0].split("\\")[:-1]) + "\\graficos\\" + text
+        path = pasta = "./graficos/" + text
         self.label_img_grafico.setPixmap(QtGui.QPixmap(path))
         # mostrar o gráfico no label
         pass
@@ -389,10 +399,11 @@ class Ui_MainWindow(object):
         if( c and v):
             c_conv, v_conv = self.conversao()
             self.font.powerSupplyOpen(c*c_conv,v*v_conv)
-            file = self.input_caminho.text()
+            file = "./tabelas/"+self.input_caminho.text()
             type = self.tipo_file.currentText()
             self.multimeter.readValues(file, type)
             self.font.powerSupplyClose()
+            self.multimeter.multimeterClose()
         # self.multimeter.readValues()
 
         
